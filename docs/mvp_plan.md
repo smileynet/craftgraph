@@ -40,8 +40,9 @@ This document outlines the incremental steps and major milestones for developing
 ### Step 5: User Interface
 - **Objective**: Create a basic user interface for player interaction.
 - **Tasks**:
-  - Design and implement a simple UI for resource gathering and crafting.
+  - Design and implement a simple web-based UI for resource gathering and crafting.
   - Ensure the UI is intuitive and easy to use.
+  - Implement a simple chat interface for player interaction. Players can type commands to interact with the game.
 - **Outcome**: A user-friendly interface for interacting with the game.
 - **Test**: Allow the player to navigate the UI, gather resources, and craft items seamlessly.
 
