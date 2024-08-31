@@ -19,10 +19,10 @@ CraftGraph is a simple game focused on crafting and resource gathering. The game
 4. **Progression**: Unlock new crafting recipes and resources as the game progresses.
 
 ## MVP Prototype Plan
-- Implement basic resource gathering.
-- Develop a simple crafting system.
-- Integrate knowledge graphs for crafting logic.
-- Create a basic user interface for interaction.
+- [x] Use knowledge graphs for game logic.
+- [ ] Implement basic resource gathering.
+- [ ]Develop a simple crafting system.
+- [ ]Create a basic user interface for interaction.
 
 ## Future Enhancements
 - Expand the variety of resources and crafting recipes.
