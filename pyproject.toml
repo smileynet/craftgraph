@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "CraftGraph"
+version = "0.1.0"
+description = "A game about crafting and graph theory"
+authors = ["Sam Biggins <sambiggins@gmail.com>"]
+readme = "README.md"
+package-mode = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[flake8]
+max-line-length = 88
+extend-ignore = ["E203", "E266", "E501", "W503"]
+plugins = ["flake8-pytest-style"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+python-dotenv = "^1.0.1"
+networkx = "^3.3"
+matplotlib = "^3.9.2"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+mkdocs = "^1.6.0"
+mkdocs-material = "^9.5.33"
+pytest = "^8.3.2"
+flake8-pytest-style = "^2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

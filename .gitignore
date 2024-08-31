@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Poetry
+.venv/
+poetry.lock
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# MkDocs
+site/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Aider
+.aider*
