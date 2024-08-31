@@ -100,7 +100,11 @@
 - **Requirements**:
   - Ensure all tests pass before pushing any changes.
   - Write unit tests for all critical functionalities.
-- **Running Tests**: Use `poetry run pytest` to execute tests in the terminal. Note that `pytest` is configured to include the `src` directory in its path, so imports should not include `src` as part of the import string. Tests for `CraftGraph` are located in `tests/CraftGraph/`.
+- **Running Tests**: Use `poetry run pytest` to execute tests in the terminal.
+- **Import Conventions**:
+  - When importing modules from `src` in test files, use the module name directly without the `src.` prefix.
+  - Example: Use `from resource_manager import ResourceManager` instead of `from src.resource_manager import ResourceManager`.
+- **Test Location**: Place all test files directly in the `tests/` directory.
 - **Test Design**:
   - Prefix test function names with `test_` to ensure they are discovered by pytest.
   - Use descriptive names for test functions to clearly indicate what is being tested.

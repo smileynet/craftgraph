@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A game about crafting and graph theory"
 authors = ["Sam Biggins <sambiggins@gmail.com>"]
 readme = "README.md"
-package-mode = true
+package-mode = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

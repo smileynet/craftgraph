@@ -7,13 +7,18 @@ def display_graph(graph):
     """
     Display the knowledge graph using matplotlib.
 
-    :param graph: A NetworkX graph representing the knowledge graph.
+    This function visualizes the knowledge graph, coloring nodes based on their type
+    and displaying edge labels for actions.
+
+    Args:
+        graph (nx.DiGraph): A NetworkX directed graph representing the knowledge graph.
     """
+    # Set up the layout for the graph
     pos = nx.spring_layout(
         graph,
-        k=0.6,
-        seed=42,
-    )  # Adjust k for optimal distance between nodes
+        k=0.6,  # Adjust spring constant for optimal distance between nodes
+        seed=42,  # Set seed for reproducible layout
+    )
 
     # Define color map for node types
     color_map = {
@@ -29,6 +34,7 @@ def display_graph(graph):
         for _, attr in graph.nodes(data=True)
     ]
 
+    # Draw the graph
     nx.draw(
         graph,
         pos,
@@ -38,8 +44,12 @@ def display_graph(graph):
         font_size=10,
         font_weight="bold",
     )
+
+    # Add edge labels
     edge_labels = nx.get_edge_attributes(graph, "action")
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+
+    # Display the graph
     plt.show()
 
 
