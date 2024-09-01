@@ -6,8 +6,8 @@ Enable players to craft items using gathered resources.
 ## Tasks
 
 1. **Define Crafting Recipes in Knowledge Graph**:
-   - Update the knowledge graph structure to include crafting recipes.
-   - Add edges between resource nodes and craftable item nodes with "craft" attributes.
+   - Update the knowledge graph structure to add a recipe node that is connected to the resource nodes and the crafted item node.
+   - Update data/knowledge_graph.json to include the new relationships.
    - Ensure the `parse_knowledge_graph` function can interpret these new relationships.
 
 2. **Implement Crafting Logic**:

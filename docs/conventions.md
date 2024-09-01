@@ -1,7 +1,7 @@
 # CraftGraph Conventions
 
 ## Knowledge Graphs
-- **Library**: Use the `networkx` library for creating and managing knowledge graphs, implemented in `src/CraftGraph/knowledge_graph_parser.py`.
+- **Library**: Use the `networkx` library for creating and managing knowledge graphs, implemented in `src/knowledge_graph_parser.py`.
 - **Structure**: Define resources and crafting recipes as nodes and edges within the graph.
 - **Best Practices**:
   - Ensure that each node represents a unique resource or item.

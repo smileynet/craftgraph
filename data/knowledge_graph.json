@@ -1,27 +1,97 @@
 {
     "nodes": [
-        {"id": "wood", "attributes": {"type": "resource"}},
-        {"id": "stone", "attributes": {"type": "resource"}},
-        {"id": "iron", "attributes": {"type": "resource"}},
-        {"id": "tree", "attributes": {"type": "raw"}},
-        {"id": "rock", "attributes": {"type": "raw"}},
-        {"id": "iron_ore", "attributes": {"type": "raw"}},
-        {"id": "stone_axe", "attributes": {"type": "tool"}},
-        {"id": "stone_pickaxe", "attributes": {"type": "tool"}},
-        {"id": "iron_axe", "attributes": {"type": "tool"}},
-        {"id": "iron_pickaxe", "attributes": {"type": "tool"}}
+        {
+            "id": "wood",
+            "type": "resource"
+        },
+        {
+            "id": "stone",
+            "type": "resource"
+        },
+        {
+            "id": "iron_ore",
+            "type": "resource"
+        },
+        {
+            "id": "wooden_axe",
+            "type": "tool"
+        },
+        {
+            "id": "stone_pickaxe",
+            "type": "tool"
+        },
+        {
+            "id": "iron_sword",
+            "type": "tool"
+        }
     ],
     "edges": [
-        {"source": "tree", "target": "wood", "attributes": {"action": "chop"}},
-        {"source": "rock", "target": "stone", "attributes": {"action": "mine"}},
-        {"source": "iron_ore", "target": "iron", "attributes": {"action": "extract"}},
-        {"source": "wood", "target": "stone_axe", "attributes": {"action": "craft"}},
-        {"source": "stone", "target": "stone_axe", "attributes": {"action": "craft"}},
-        {"source": "wood", "target": "stone_pickaxe", "attributes": {"action": "craft"}},
-        {"source": "stone", "target": "stone_pickaxe", "attributes": {"action": "craft"}},
-        {"source": "wood", "target": "iron_axe", "attributes": {"action": "craft"}},
-        {"source": "iron", "target": "iron_axe", "attributes": {"action": "craft"}},
-        {"source": "wood", "target": "iron_pickaxe", "attributes": {"action": "craft"}},
-        {"source": "iron", "target": "iron_pickaxe", "attributes": {"action": "craft"}}
+        {
+            "source": "wood",
+            "target": "wooden_axe",
+            "type": "crafts",
+            "quantity": 1
+        },
+        {
+            "source": "stone",
+            "target": "stone_pickaxe",
+            "type": "crafts",
+            "quantity": 1
+        },
+        {
+            "source": "iron_ore",
+            "target": "iron_sword",
+            "type": "crafts",
+            "quantity": 1
+        }
+    ],
+    "recipes": [
+        {
+            "id": "wooden_axe_recipe",
+            "input": [
+                {
+                    "resource": "wood",
+                    "quantity": 3
+                }
+            ],
+            "output": {
+                "item": "wooden_axe",
+                "quantity": 1
+            }
+        },
+        {
+            "id": "stone_pickaxe_recipe",
+            "input": [
+                {
+                    "resource": "stone",
+                    "quantity": 3
+                },
+                {
+                    "resource": "wood",
+                    "quantity": 2
+                }
+            ],
+            "output": {
+                "item": "stone_pickaxe",
+                "quantity": 1
+            }
+        },
+        {
+            "id": "iron_sword_recipe",
+            "input": [
+                {
+                    "resource": "iron_ore",
+                    "quantity": 2
+                },
+                {
+                    "resource": "wood",
+                    "quantity": 1
+                }
+            ],
+            "output": {
+                "item": "iron_sword",
+                "quantity": 1
+            }
+        }
     ]
 }
