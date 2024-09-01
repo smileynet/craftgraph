@@ -110,3 +110,23 @@
   - Utilize pytest fixtures for setup and teardown operations.
   - Incorporate assertions to verify expected outcomes.
   - Consider using parameterized tests to efficiently test multiple scenarios.
+
+## Error Handling
+- **Best Practices**:
+  - Use try-except blocks to handle exceptions gracefully.
+  - Log errors with sufficient context to aid in debugging.
+  - Avoid using bare except clauses; catch specific exceptions.
+  - Ensure that resources (e.g., files, network connections) are properly closed or released in the event of an error.
+  - Use custom exception classes where appropriate to provide more meaningful error messages.
+
+## Logging
+- **Tool**: Use the `logging` module for logging.
+- **Configuration**:
+  - Configure logging settings at the entry point of the application.
+  - Use different logging levels (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL) appropriately.
+  - Direct log output to both console and log files for persistence.
+- **Best Practices**:
+  - Include timestamps in log messages.
+  - Log key events such as application start/stop, errors, and significant state changes.
+  - Avoid logging sensitive information.
+  - Use structured logging where possible to facilitate log parsing and analysis.

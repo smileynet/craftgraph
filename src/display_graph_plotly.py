@@ -3,23 +3,27 @@ import plotly.graph_objects as go
 from knowledge_graph_parser import parse_knowledge_graph
 import logging
 
-# Set up logging
+# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+logger = logging.getLogger(__name__)
 
 
 def display_graph_plotly(graph):
     """Display the knowledge graph using Plotly."""
+    logger.info("Starting to display knowledge graph using Plotly")
     try:
         # Create a spring layout
+        logger.debug("Creating spring layout for the graph")
         pos = nx.spring_layout(graph, k=0.7, iterations=50)
     except Exception as e:
-        logging.error(f"Error creating graph layout: {str(e)}")
+        logger.exception(f"Error creating graph layout: {str(e)}")
         return
 
     try:
         # Create edge trace
+        logger.debug("Creating edge trace")
         edge_x, edge_y, edge_text = [], [], []
         for edge in graph.edges():
             x0, y0 = pos[edge[0]]
@@ -40,6 +44,7 @@ def display_graph_plotly(graph):
         )
 
         # Create edge label trace
+        logger.debug("Creating edge label trace")
         edge_label_x, edge_label_y, edge_labels = [], [], []
         for edge in graph.edges():
             x0, y0 = pos[edge[0]]
@@ -59,6 +64,7 @@ def display_graph_plotly(graph):
         )
 
         # Create node trace
+        logger.debug("Creating node trace")
         node_x, node_y, node_text, node_colors = [], [], [], []
         for node in graph.nodes():
             x, y = pos[node]
@@ -95,6 +101,7 @@ def display_graph_plotly(graph):
         )
 
         # Create the figure
+        logger.debug("Creating the Plotly figure")
         fig = go.Figure(
             data=[edge_trace, edge_label_trace, node_trace],
             layout=go.Layout(
@@ -121,6 +128,7 @@ def display_graph_plotly(graph):
         )
 
         # Add a legend
+        logger.debug("Adding legend to the figure")
         for node_type, color in color_map.items():
             fig.add_trace(
                 go.Scatter(
@@ -140,14 +148,16 @@ def display_graph_plotly(graph):
         )
 
         # Show the plot
+        logger.info("Displaying the Plotly figure")
         fig.show()
     except Exception as e:
-        logging.error(f"Error creating or displaying the plot: {str(e)}")
+        logger.exception(f"Error creating or displaying the plot: {str(e)}")
 
 
 if __name__ == "__main__":
     try:
+        logger.info("Parsing knowledge graph from JSON file")
         graph = parse_knowledge_graph("data/knowledge_graph.json")
         display_graph_plotly(graph)
     except Exception as e:
-        logging.error(f"Error parsing knowledge graph: {str(e)}")
+        logger.exception(f"Error in main execution: {str(e)}")

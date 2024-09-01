@@ -1,5 +1,12 @@
-from resource_manager import ResourceManager
 import json
+import logging
+from resource_manager import ResourceManager
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class GameInterface:
@@ -16,14 +23,18 @@ class GameInterface:
         Args:
             knowledge_graph_path (str): Path to the JSON file containing the knowledge graph data.
         """
+        logger.info(
+            f"Initializing GameInterface with knowledge graph: {knowledge_graph_path}"
+        )
         try:
             self.resource_manager = ResourceManager(knowledge_graph_path)
             self.inventory = {}
+            logger.info("GameInterface initialized successfully")
         except FileNotFoundError:
-            print(f"Error: Knowledge graph file not found at {knowledge_graph_path}")
+            logger.error(f"Knowledge graph file not found at {knowledge_graph_path}")
             raise
         except json.JSONDecodeError:
-            print(f"Error: Invalid JSON format in {knowledge_graph_path}")
+            logger.error(f"Invalid JSON format in {knowledge_graph_path}")
             raise
 
     def display_available_resources(self):
@@ -31,6 +42,7 @@ class GameInterface:
         Display the list of available resources to the player.
         """
         resources = self.resource_manager.get_available_resource_nodes()
+        logger.debug(f"Displaying {len(resources)} available resources")
         print("Available resources:")
         for i, resource in enumerate(resources, 1):
             print(f"{i}. {resource}")
@@ -46,21 +58,29 @@ class GameInterface:
         try:
             if 1 <= choice <= len(resources):
                 resource = resources[choice - 1]
+                logger.info(f"Attempting to gather resource: {resource}")
                 gathered = self.resource_manager.gather_resource(resource)
                 if gathered:
                     self.inventory[resource] = self.inventory.get(resource, 0) + 1
+                    logger.info(f"Resource gathered successfully: {resource}")
                     print(f"You gathered {resource}!")
                 else:
+                    logger.warning(f"Failed to gather resource: {resource}")
                     print("Failed to gather resource.")
             else:
+                logger.warning(f"Invalid resource choice: {choice}")
                 print("Invalid choice.")
         except Exception as e:
+            logger.exception(
+                f"An error occurred while gathering the resource: {str(e)}"
+            )
             print(f"An error occurred while gathering the resource: {str(e)}")
 
     def display_inventory(self):
         """
         Display the player's current inventory.
         """
+        logger.debug("Displaying player inventory")
         print("Inventory:")
         for item, count in self.inventory.items():
             print(f"{item}: {count}")
@@ -69,6 +89,7 @@ class GameInterface:
         """
         Run the main game loop, allowing the player to interact with the game.
         """
+        logger.info("Starting the main game loop")
         while True:
             # Display the main menu
             print("\n1. View available resources")
@@ -76,6 +97,7 @@ class GameInterface:
             print("3. View inventory")
             print("4. Quit")
             choice = input("Enter your choice: ")
+            logger.debug(f"Player chose option: {choice}")
 
             # Process the player's choice
             if choice == "1":
@@ -88,19 +110,26 @@ class GameInterface:
                     )
                     self.gather_resource(resource_choice)
                 except ValueError:
+                    logger.warning("Invalid input for resource gathering")
                     print("Invalid input. Please enter a number.")
             elif choice == "3":
                 self.display_inventory()
             elif choice == "4":
+                logger.info("Player chose to quit the game")
                 break
             else:
+                logger.warning(f"Invalid menu choice: {choice}")
                 print("Invalid choice. Please try again.")
+
+        logger.info("Game loop ended")
 
 
 if __name__ == "__main__":
     # Create and run the game interface
     try:
+        logger.info("Starting the game")
         game = GameInterface("data/knowledge_graph.json")
         game.run()
     except Exception as e:
+        logger.exception(f"An error occurred while starting the game: {str(e)}")
         print(f"An error occurred while starting the game: {str(e)}")
