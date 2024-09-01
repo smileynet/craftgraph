@@ -20,6 +20,11 @@ python = ">=3.10,<3.13"
 python-dotenv = "^1.0.1"
 networkx = "^3.3"
 matplotlib = "^3.9.2"
+pygraphviz = "^1.13"
+python-igraph = "^0.11.6"
+cairocffi = "^1.7.1"
+igraph = "^0.11.6"
+plotly = "^5.24.0"
 
 
 [tool.poetry.group.dev.dependencies]

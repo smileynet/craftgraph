@@ -22,8 +22,7 @@
 - **Lists**: Use bullet points for unordered lists and numbers for ordered lists.
 - **Links**: Use descriptive text for hyperlinks, avoiding raw URLs (e.g., [Python Documentation](https://docs.python.org/3/)).
 
-## Updating Documentation
-- **Contextual Awareness**: Review the latest project context, including recent changes, before updating documentation.
+## Updating Documentatio, before updating documentation.
 - **Consistency**: Ensure updates align with the existing structure and tone of the document.
 - **Accuracy**: Verify that the updates reflect the actual project practices and tools in use.
 - **Clarity**: Maintain clear, concise, and unambiguous language.
