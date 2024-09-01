@@ -16,9 +16,15 @@ class ResourceManager:
         Args:
             knowledge_graph_path (str): Path to the JSON file containing the knowledge graph data.
         """
-        self.graph = parse_knowledge_graph(knowledge_graph_path)
-        self.resources = get_available_resources(self.graph)
-        self.resource_nodes = self._generate_resource_nodes()
+        try:
+            self.graph = parse_knowledge_graph(knowledge_graph_path)
+            self.resources = get_available_resources(self.graph)
+            if not self.resources:
+                raise ValueError("No resources found in the knowledge graph")
+            self.resource_nodes = self._generate_resource_nodes()
+        except Exception as e:
+            print(f"Error initializing ResourceManager: {str(e)}")
+            raise
 
     def _generate_resource_nodes(self, num_nodes=10):
         """
@@ -30,7 +36,11 @@ class ResourceManager:
         Returns:
             list: A list of randomly chosen resource nodes.
         """
-        return [random.choice(self.resources) for _ in range(num_nodes)]
+        try:
+            return [random.choice(self.resources) for _ in range(num_nodes)]
+        except IndexError:
+            print("Error: No resources available to generate nodes")
+            return []
 
     def gather_resource(self, resource_id):
         """
@@ -42,10 +52,14 @@ class ResourceManager:
         Returns:
             str or None: The gathered resource ID if successful, None otherwise.
         """
-        if resource_id in self.resource_nodes:
-            self.resource_nodes.remove(resource_id)  # Remove only one instance
-            return resource_id
-        return None
+        try:
+            if resource_id in self.resource_nodes:
+                self.resource_nodes.remove(resource_id)  # Remove only one instance
+                return resource_id
+            return None
+        except Exception as e:
+            print(f"Error gathering resource: {str(e)}")
+            return None
 
     def get_available_resource_nodes(self):
         """
@@ -63,5 +77,28 @@ class ResourceManager:
         Args:
             num_nodes (int): Number of new resources to add. Defaults to 1.
         """
-        new_resources = [random.choice(self.resources) for _ in range(num_nodes)]
-        self.resource_nodes.extend(new_resources)
+        try:
+            new_resources = [random.choice(self.resources) for _ in range(num_nodes)]
+            self.resource_nodes.extend(new_resources)
+        except IndexError:
+            print("Error: No resources available to replenish")
+        except Exception as e:
+            print(f"Error replenishing resources: {str(e)}")
+
+
+if __name__ == "__main__":
+    try:
+        # Example usage
+        resource_manager = ResourceManager("data/knowledge_graph.json")
+        print("Available resources:", resource_manager.get_available_resource_nodes())
+        
+        # Try gathering a resource
+        resource_to_gather = resource_manager.get_available_resource_nodes()[0]
+        gathered = resource_manager.gather_resource(resource_to_gather)
+        print(f"Gathered resource: {gathered}")
+        
+        # Replenish resources
+        resource_manager.replenish_resources(2)
+        print("Resources after replenishment:", resource_manager.get_available_resource_nodes())
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
