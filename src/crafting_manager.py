@@ -23,7 +23,7 @@ class CraftingManager:
         """
         self.resource_manager = resource_manager
         self.knowledge_graph = knowledge_graph
-        logger.info("CraftingManager initialized")
+        logger.info("CraftingManager initialized with ResourceManager and KnowledgeGraph")
 
     def check_resources(self, recipe: Dict[str, int]) -> bool:
         """
@@ -37,9 +37,9 @@ class CraftingManager:
         """
         for resource, amount in recipe.items():
             if self.resource_manager.get_resource_amount(resource) < amount:
-                logger.debug(f"Insufficient resource: {resource}")
+                logger.warning(f"Insufficient resource: {resource} (required: {amount}, available: {self.resource_manager.get_resource_amount(resource)})")
                 return False
-        logger.debug("All required resources available")
+        logger.info("All required resources available")
         return True
 
     def craft_item(self, item: str, recipe: Dict[str, int]) -> bool:
@@ -61,6 +61,7 @@ class CraftingManager:
             # Consume resources
             for resource, amount in recipe.items():
                 self.resource_manager.remove_resource(resource, amount)
+                logger.debug(f"Consumed {amount} of {resource}")
 
             # Add crafted item to inventory
             self.resource_manager.add_resource(item, 1)
@@ -81,7 +82,7 @@ class CraftingManager:
         """
         try:
             recipes = self.knowledge_graph.get_recipes()
-            logger.debug(f"Retrieved {len(recipes)} recipes")
+            logger.info(f"Retrieved {len(recipes)} recipes")
             return recipes
         except Exception as e:
             logger.error(f"Error retrieving recipes: {str(e)}")
