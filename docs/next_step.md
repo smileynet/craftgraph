@@ -14,6 +14,7 @@ Enable players to craft items using gathered resources.
    - Create a new `CraftingManager` class to handle crafting operations.
    - Implement a method to check if a player has the required resources for a recipe.
    - Add functionality to consume resources and produce crafted items.
+   - **Completed**: The `CraftingManager` class has been implemented in `crafting_manager.py`.
 
 3. **Update Game Interface**:
    - Add a new method `display_crafting_options` to show available recipes.
