@@ -56,7 +56,7 @@ def display_graph_pygraphviz(graph):
         logger.info("Laying out the graph")
         agraph.layout(prog="dot")
 
-        output_file = "knowledge_graph_pygraphviz.png"
+        output_file = "outputs/knowledge_graph_pygraphviz.png"
         logger.info(f"Drawing the graph to file: {output_file}")
         agraph.draw(output_file)
 
