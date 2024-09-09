@@ -21,7 +21,6 @@ def parse_knowledge_graph(file_path):
 
     Returns:
         nx.DiGraph: A NetworkX directed graph representing the knowledge graph.
-        dict: A dictionary of recipes parsed from the JSON data.
 
     Raises:
         FileNotFoundError: If the specified JSON file is not found.
@@ -40,24 +39,16 @@ def parse_knowledge_graph(file_path):
         # Add nodes and edges from JSON data
         for node in data.get("nodes", []):
             # Add node with its attributes
-            graph.add_node(node["id"], **node.get("attributes", {}))
+            graph.add_node(node["id"], attributes=node["attributes"])
         logger.debug(f"Added {len(data.get('nodes', []))} nodes to the graph")
 
         for edge in data.get("edges", []):
             # Add edge with its attributes
-            graph.add_edge(edge["source"], edge["target"], **edge.get("attributes", {}))
+            graph.add_edge(edge["source"], edge["target"], attributes=edge["attributes"])
         logger.debug(f"Added {len(data.get('edges', []))} edges to the graph")
 
-        # Parse recipes
-        recipes = {}
-        for recipe in data.get("recipes", []):
-            recipes[recipe["id"]] = {
-                "input": recipe["input"],
-                "output": recipe["output"],
-            }
-
         logger.info("Knowledge graph parsed successfully")
-        return graph, recipes
+        return graph
 
     except FileNotFoundError:
         logger.error(f"Knowledge graph file not found at {file_path}")
@@ -88,7 +79,7 @@ def get_available_resources(graph):
         resources_and_tools = [
             node
             for node, attr in graph.nodes(data=True)
-            if attr.get("type") in ["resource", "tool"]
+            if attr['attributes'].get("type") in ["resource", "tool"]
         ]
         logger.debug(f"Found {len(resources_and_tools)} available resources and tools")
         return resources_and_tools
@@ -99,38 +90,11 @@ def get_available_resources(graph):
         return []
 
 
-def get_crafting_recipes(G, recipes):
-    """
-    Get crafting recipes from the knowledge graph.
-
-    This function organizes the recipes by their output item for easy access.
-
-    Args:
-        G (nx.DiGraph): A NetworkX directed graph representing the knowledge graph.
-        recipes (dict): A dictionary of recipes parsed from the JSON data.
-
-    Returns:
-        dict: A dictionary of crafting recipes, keyed by the output item.
-    """
-    logger.info("Organizing crafting recipes")
-    crafting_recipes = {}
-    for recipe_id, recipe_data in recipes.items():
-        output_item = recipe_data["output"]["item"]
-        crafting_recipes[output_item] = {
-            "input": recipe_data["input"],
-            "output": recipe_data["output"],
-        }
-    logger.debug(f"Organized {len(crafting_recipes)} crafting recipes")
-    return crafting_recipes
-
-
 if __name__ == "__main__":
     try:
         # Example usage
-        graph, recipes = parse_knowledge_graph("data/knowledge_graph.json")
+        graph = parse_knowledge_graph("../data/knowledge_graph.json")
         resources = get_available_resources(graph)
-        crafting_recipes = get_crafting_recipes(graph, recipes)
-        logger.info(f"Available resources: {resources}")
-        logger.info(f"Crafting recipes: {crafting_recipes}")
+        logger.info(f"Available resources and tools: {resources}")
     except Exception as e:
         logger.exception(f"An error occurred: {str(e)}")

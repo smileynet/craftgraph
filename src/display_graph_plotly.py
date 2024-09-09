@@ -9,77 +9,60 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 def display_graph_plotly(graph):
     """Display the knowledge graph using Plotly."""
     logger.info("Starting to display knowledge graph using Plotly")
     try:
+        # Convert the directed graph to an undirected graph for display
+        simple_graph = graph.to_undirected()
+
         # Create a spring layout
         logger.debug("Creating spring layout for the graph")
-        pos = nx.spring_layout(graph, k=0.7, iterations=50)
-    except Exception as e:
-        logger.exception(f"Error creating graph layout: {str(e)}")
-        return
+        pos = nx.spring_layout(simple_graph, k=0.7, iterations=50)
 
-    try:
         # Create edge trace
         logger.debug("Creating edge trace")
         edge_x, edge_y, edge_text = [], [], []
-        for edge in graph.edges():
+        for edge in simple_graph.edges():
             x0, y0 = pos[edge[0]]
             x1, y1 = pos[edge[1]]
             edge_x.extend([x0, x1, None])
             edge_y.extend([y0, y1, None])
-            edge_text.append(
-                f"{edge[0]} -> {edge[1]}: {graph.edges[edge].get('action', '')}"
-            )
+            # Check both directions for the edge attributes in the original directed graph
+            if edge in graph.edges:
+                action = graph.edges[edge]['attributes'].get('action', '')
+            elif (edge[1], edge[0]) in graph.edges:
+                action = graph.edges[(edge[1], edge[0])]['attributes'].get('action', '')
+            else:
+                action = ''
+            edge_text.append(f"{edge[0]} <-> {edge[1]}: {action}")
 
         edge_trace = go.Scatter(
             x=edge_x,
             y=edge_y,
-            line=dict(width=1, color="#888"),
+            line=dict(width=1.5, color="#888"),  # Increased line width
             hoverinfo="text",
             text=edge_text,
             mode="lines",
-        )
-
-        # Create edge label trace
-        logger.debug("Creating edge label trace")
-        edge_label_x, edge_label_y, edge_labels = [], [], []
-        for edge in graph.edges():
-            x0, y0 = pos[edge[0]]
-            x1, y1 = pos[edge[1]]
-            edge_label_x.append((x0 + x1) / 2)
-            edge_label_y.append((y0 + y1) / 2)
-            edge_labels.append(graph.edges[edge].get("action", ""))
-
-        edge_label_trace = go.Scatter(
-            x=edge_label_x,
-            y=edge_label_y,
-            mode="text",
-            text=edge_labels,
-            textposition="middle center",
-            hoverinfo="none",
-            textfont=dict(size=8, color="#555"),
+            opacity=0.7,  # Added some transparency
         )
 
         # Create node trace
         logger.debug("Creating node trace")
         node_x, node_y, node_text, node_colors = [], [], [], []
-        for node in graph.nodes():
+        for node in simple_graph.nodes():
             x, y = pos[node]
             node_x.append(x)
             node_y.append(y)
             node_text.append(
-                f"Node: {node}<br>Type: {graph.nodes[node].get('type', 'unknown')}"
+                f"Node: {node}<br>Type: {graph.nodes[node]['attributes'].get('type', 'unknown')}"
             )
-            node_colors.append(graph.nodes[node].get("type", "unknown"))
+            node_colors.append(graph.nodes[node]['attributes'].get('type', 'unknown'))
 
         color_map = {
             "resource": "#8FBC8F",  # Dark Sea Green
-            "raw": "#CD5C5C",  # Indian Red
             "tool": "#6495ED",  # Cornflower Blue
-            "item": "#DAA520",  # Goldenrod
+            "raw": "#FFA07A",  # Light Salmon
             "unknown": "#D3D3D3",  # Light Gray
         }
 
@@ -88,7 +71,7 @@ def display_graph_plotly(graph):
             y=node_y,
             mode="markers+text",
             hoverinfo="text",
-            text=list(graph.nodes()),
+            text=list(simple_graph.nodes()),
             hovertext=node_text,
             textposition="top center",
             marker=dict(
@@ -103,7 +86,7 @@ def display_graph_plotly(graph):
         # Create the figure
         logger.debug("Creating the Plotly figure")
         fig = go.Figure(
-            data=[edge_trace, edge_label_trace, node_trace],
+            data=[edge_trace, node_trace],
             layout=go.Layout(
                 title="Knowledge Graph",
                 titlefont_size=16,
@@ -126,6 +109,26 @@ def display_graph_plotly(graph):
                 paper_bgcolor="rgba(0,0,0,0)",
             ),
         )
+
+        # Add edge labels
+        for edge in simple_graph.edges():
+            x0, y0 = pos[edge[0]]
+            x1, y1 = pos[edge[1]]
+            if edge in graph.edges:
+                action = graph.edges[edge]['attributes'].get('action', '')
+            elif (edge[1], edge[0]) in graph.edges:
+                action = graph.edges[(edge[1], edge[0])]['attributes'].get('action', '')
+            else:
+                action = ''
+            fig.add_annotation(
+                x=(x0 + x1) / 2,
+                y=(y0 + y1) / 2,
+                text=action,
+                showarrow=False,
+                font=dict(size=10, color="#555"),
+                bgcolor="white",
+                opacity=0.8
+            )
 
         # Add a legend
         logger.debug("Adding legend to the figure")
@@ -156,8 +159,9 @@ def display_graph_plotly(graph):
 
 if __name__ == "__main__":
     try:
+        file_path = '../data/knowledge_graph.json'
         logger.info("Parsing knowledge graph from JSON file")
-        graph = parse_knowledge_graph("data/knowledge_graph.json")
+        graph = parse_knowledge_graph(file_path)
         display_graph_plotly(graph)
     except Exception as e:
         logger.exception(f"Error in main execution: {str(e)}")
