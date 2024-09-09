@@ -153,6 +153,15 @@ def display_graph_plotly(graph):
         # Show the plot
         logger.info("Displaying the Plotly figure")
         fig.show()
+
+        # Write to file using Kaleido
+        logger.info("Writing the figure to a file using Kaleido")
+        try:
+            fig.update_layout(plot_bgcolor='white', paper_bgcolor='white')
+            fig.write_image("outputs/knowledge_graph_kaleido.png", engine="kaleido", scale=2)
+            logger.info("Successfully wrote the figure to knowledge_graph.png")
+        except Exception as e:
+            logger.exception(f"Error writing figure to file: {str(e)}")
     except Exception as e:
         logger.exception(f"Error creating or displaying the plot: {str(e)}")
 
