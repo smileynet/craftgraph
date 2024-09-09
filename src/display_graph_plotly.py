@@ -159,7 +159,7 @@ def display_graph_plotly(graph):
 
 if __name__ == "__main__":
     try:
-        file_path = '../data/knowledge_graph.json'
+        file_path = 'data/knowledge_graph.json'
         logger.info("Parsing knowledge graph from JSON file")
         graph = parse_knowledge_graph(file_path)
         display_graph_plotly(graph)
