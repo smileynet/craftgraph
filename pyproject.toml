@@ -20,7 +20,6 @@ python = ">=3.10,<3.13"
 python-dotenv = "^1.0.1"
 networkx = "^3.3"
 matplotlib = "^3.9.2"
-pygraphviz = "^1.13"
 python-igraph = "^0.11.6"
 cairocffi = "^1.7.1"
 igraph = "^0.11.6"
@@ -33,6 +32,7 @@ mkdocs = "^1.6.0"
 mkdocs-material = "^9.5.33"
 pytest = "^8.3.2"
 flake8-pytest-style = "^2.0.0"
+black = "^24.8.0"
 
 
 [build-system]

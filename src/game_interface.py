@@ -1,5 +1,6 @@
 import json
 import logging
+
 from resource_manager import ResourceManager
 
 # Configure logging
@@ -37,12 +38,22 @@ class GameInterface:
             logger.error(f"Invalid JSON format in {knowledge_graph_path}")
             raise
 
+    def get_gatherable_resources(self):
+        """
+        Get the list of resources that can be gathered (excluding craftable items).
+
+        Returns:
+            list: A list of gatherable resource IDs.
+        """
+        all_resources = self.resource_manager.get_available_resource_nodes()
+        return [r for r in all_resources if not self.resource_manager.is_craftable(r)]
+
     def display_available_resources(self):
         """
-        Display the list of available resources to the player.
+        Display the list of available gatherable resources to the player.
         """
-        resources = self.resource_manager.get_available_resource_nodes()
-        logger.debug(f"Displaying {len(resources)} available resources")
+        resources = self.get_gatherable_resources()
+        logger.debug(f"Displaying {len(resources)} available gatherable resources")
         print("Available resources:")
         for i, resource in enumerate(resources, 1):
             print(f"{i}. {resource}")
@@ -54,7 +65,7 @@ class GameInterface:
         Args:
             choice (int): The index of the resource to gather, as displayed to the player.
         """
-        resources = self.resource_manager.get_available_resource_nodes()
+        resources = self.get_gatherable_resources()
         try:
             if 1 <= choice <= len(resources):
                 resource = resources[choice - 1]
@@ -127,8 +138,9 @@ class GameInterface:
 if __name__ == "__main__":
     # Create and run the game interface
     try:
+        filepath = "data/knowledge_graph.json"
         logger.info("Starting the game")
-        game = GameInterface("data/knowledge_graph.json")
+        game = GameInterface(filepath)
         game.run()
     except Exception as e:
         logger.exception(f"An error occurred while starting the game: {str(e)}")

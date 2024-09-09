@@ -104,6 +104,27 @@ class ResourceManager:
             logger.exception(f"Error replenishing resources: {str(e)}")
 
 
+    def is_craftable(self, resource_id):
+        """
+        Check if a resource is craftable.
+
+        Args:
+            resource_id (str): The ID of the resource to check.
+
+        Returns:
+            bool: True if the resource is craftable, False otherwise.
+        """
+        try:
+            # Check if there are any incoming edges with the 'craft' action
+            incoming_edges = self.graph.in_edges(resource_id, data=True)
+            return any(edge[2]['attributes'].get('action') == 'craft' for edge in incoming_edges)
+        except Exception as e:
+            logger.exception(f"Error checking if resource is craftable: {str(e)}")
+            return False
+
+
+
+
 if __name__ == "__main__":
     try:
         # Example usage

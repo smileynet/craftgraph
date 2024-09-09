@@ -1,5 +1,6 @@
 import json
 import logging
+
 import networkx as nx
 
 # Configure logging
@@ -44,7 +45,9 @@ def parse_knowledge_graph(file_path):
 
         for edge in data.get("edges", []):
             # Add edge with its attributes
-            graph.add_edge(edge["source"], edge["target"], attributes=edge["attributes"])
+            graph.add_edge(
+                edge["source"], edge["target"], attributes=edge["attributes"]
+            )
         logger.debug(f"Added {len(data.get('edges', []))} edges to the graph")
 
         logger.info("Knowledge graph parsed successfully")
@@ -79,7 +82,7 @@ def get_available_resources(graph):
         resources_and_tools = [
             node
             for node, attr in graph.nodes(data=True)
-            if attr['attributes'].get("type") in ["resource", "tool"]
+            if attr["attributes"].get("type") in ["resource", "tool"]
         ]
         logger.debug(f"Found {len(resources_and_tools)} available resources and tools")
         return resources_and_tools
@@ -93,7 +96,7 @@ def get_available_resources(graph):
 if __name__ == "__main__":
     try:
         # Example usage
-        graph = parse_knowledge_graph("../data/knowledge_graph.json")
+        graph = parse_knowledge_graph("data/knowledge_graph.json")
         resources = get_available_resources(graph)
         logger.info(f"Available resources and tools: {resources}")
     except Exception as e:
