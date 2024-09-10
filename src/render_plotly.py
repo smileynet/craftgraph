@@ -1,7 +1,9 @@
+import logging
+
 import networkx as nx
 import plotly.graph_objects as go
+
 from knowledge_graph_parser import parse_knowledge_graph
-import logging
 
 # Configure logging
 logging.basicConfig(

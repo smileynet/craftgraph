@@ -2,8 +2,10 @@
 This module contains unit tests for the GameInterface class.
 """
 
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from game import GameInterface  # Updated import statement
 
 

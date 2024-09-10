@@ -1,6 +1,7 @@
-import random
 import logging
-from knowledge_graph_parser import parse_knowledge_graph, get_available_resources
+import random
+
+from knowledge_graph_parser import get_available_resources, parse_knowledge_graph
 
 # Configure logging
 logging.basicConfig(

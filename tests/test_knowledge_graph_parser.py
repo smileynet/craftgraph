@@ -5,9 +5,11 @@ It tests the functionality of parsing knowledge graphs and retrieving available 
 """
 
 import json
-import pytest
+
 import networkx as nx
-from knowledge_graph_parser import parse_knowledge_graph, get_available_resources
+import pytest
+
+from knowledge_graph_parser import get_available_resources, parse_knowledge_graph
 
 
 @pytest.fixture

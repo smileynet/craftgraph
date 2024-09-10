@@ -5,6 +5,7 @@ It tests the initialization, resource generation, gathering, and replenishment f
 """
 
 import pytest
+
 from resource_manager import ResourceManager
 
 
