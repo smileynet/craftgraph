@@ -19,7 +19,7 @@ def parse_knowledge_graph(file_path):
     Raises:
         FileNotFoundError: If the specified JSON file is not found.
         json.JSONDecodeError: If the JSON file is not properly formatted.
-        KeyError: If the JSON file is missing required keys.
+        KeyError: If the JSON file is missing the required "nodes" key.
     """
     logger.debug(f"Parsing knowledge graph from file: {file_path}")
     try:
@@ -30,18 +30,29 @@ def parse_knowledge_graph(file_path):
         # Create a new directed graph
         graph = nx.DiGraph()
 
-        # Add nodes and edges from JSON data
-        for node in data.get("nodes", []):
-            # Add node with its attributes
-            graph.add_node(node["id"], attributes=node["attributes"])
-        logger.debug(f"Added {len(data.get('nodes', []))} nodes to the graph")
+        # Check for the presence of the "nodes" key
+        if "nodes" not in data:
+            logger.debug("Missing required 'nodes' key in JSON data")
+            raise KeyError("Missing required 'nodes' key in JSON data")
 
-        for edge in data.get("edges", []):
-            # Add edge with its attributes
-            graph.add_edge(
-                edge["source"], edge["target"], attributes=edge["attributes"]
-            )
-        logger.debug(f"Added {len(data.get('edges', []))} edges to the graph")
+        # Add nodes from JSON data
+        for node in data["nodes"]:
+            # Add node with its attributes
+            graph.add_node(node["id"], attributes=node.get("attributes", {}))
+        logger.debug(f"Added {len(data['nodes'])} nodes to the graph")
+
+        # Add edges from JSON data if present
+        if "edges" in data:
+            for edge in data["edges"]:
+                # Add edge with its attributes
+                graph.add_edge(
+                    edge["source"],
+                    edge["target"],
+                    attributes=edge.get("attributes", {}),
+                )
+            logger.debug(f"Added {len(data['edges'])} edges to the graph")
+        else:
+            logger.debug("No 'edges' key found in JSON data, skipping edge creation")
 
         logger.debug("Knowledge graph parsed successfully")
         return graph

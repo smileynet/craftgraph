@@ -5,11 +5,9 @@ It tests the functionality of parsing knowledge graphs and retrieving available 
 """
 
 import json
-
 import networkx as nx
 import pytest
-
-from knowledge_graph_parser import get_available_resources, parse_knowledge_graph
+from knowledge_graph_parser import parse_knowledge_graph, get_available_resources
 
 
 @pytest.fixture
@@ -112,3 +110,41 @@ def test_parse_knowledge_graph_invalid_json(tmp_path):
 
     with pytest.raises(json.JSONDecodeError):
         parse_knowledge_graph(invalid_json_file)
+
+
+def test_parse_knowledge_graph_missing_key(tmp_path):
+    """
+    Test the parse_knowledge_graph function with a JSON file missing required keys.
+
+    This test ensures that the function raises a KeyError when
+    given a file with missing required keys.
+    """
+    invalid_json_file = tmp_path / "missing_key.json"
+    invalid_json_file.write_text("{}")  # Missing both "nodes" and "edges" keys
+
+    with pytest.raises(KeyError):
+        parse_knowledge_graph(invalid_json_file)
+
+
+def test_get_available_resources_empty_graph():
+    """
+    Test the get_available_resources function with an empty graph.
+
+    This test ensures that the function returns an empty list when given an empty graph.
+    """
+    empty_graph = nx.DiGraph()
+    resources_and_tools = get_available_resources(empty_graph)
+    assert resources_and_tools == []
+
+
+def test_get_available_resources_error_handling(mocker):
+    """
+    Test the error handling in get_available_resources function.
+
+    This test ensures that the function returns an empty list when an exception occurs.
+    """
+    mock_graph = mocker.Mock()
+    mock_graph.nodes.side_effect = Exception("Test exception")
+
+    resources_and_tools = get_available_resources(mock_graph)
+    assert resources_and_tools == []

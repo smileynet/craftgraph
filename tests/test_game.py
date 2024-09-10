@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from game import GameInterface  # Updated import statement
+from game import GameInterface
 
 
 @pytest.fixture
@@ -35,12 +35,14 @@ def test_display_available_resources(game, capsys):
     assert len(captured.out.split("\n")) > 1
 
 
-def test_gather_resource(game):
+def test_gather_resource(game, capsys):
     """
     Test gathering a valid resource.
     """
     initial_resources = game.resource_manager.get_available_resource_nodes()
     game.gather_resource(1)
+    captured = capsys.readouterr()
+    assert "You gathered" in captured.out
     assert len(game.inventory) == 1
     assert sum(game.inventory.values()) == 1
     assert (
@@ -80,3 +82,33 @@ def test_run_game_interface(mock_input, game, capsys):
     assert "Available resources:" in captured.out
     assert "You gathered" in captured.out
     assert "Inventory:" in captured.out
+
+
+def test_gather_resource_failure(game, capsys):
+    """
+    Test gathering a resource that fails to be gathered.
+    """
+    with patch.object(game.resource_manager, "gather_resource", return_value=None):
+        game.gather_resource(1)
+        captured = capsys.readouterr()
+        assert "Failed to gather resource." in captured.out
+
+
+@patch("builtins.input", side_effect=["invalid", "4"])
+def test_run_game_interface_invalid_input(mock_input, game, capsys):
+    """
+    Test the main game loop with invalid input.
+    """
+    game.run()
+    captured = capsys.readouterr()
+    assert "Invalid choice. Please try again." in captured.out
+
+
+@patch("builtins.input", side_effect=["2", "invalid", "4"])
+def test_run_game_interface_invalid_gather_input(mock_input, game, capsys):
+    """
+    Test the main game loop with invalid input for resource gathering.
+    """
+    game.run()
+    captured = capsys.readouterr()
+    assert "Invalid input. Please enter a number." in captured.out
