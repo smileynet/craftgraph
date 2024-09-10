@@ -10,12 +10,12 @@ __pycache__/
 .venv/
 poetry.lock
 
+# Pytest
+.coverage
+
 # VSCode
 .vscode/
 *.code-workspace
-
-# MkDocs
-site/
 
 # Environment variables
 .env
