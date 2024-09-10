@@ -3,7 +3,7 @@ import graphviz
 from knowledge_graph_parser import parse_knowledge_graph
 
 
-def display_graph_graphviz(graph):
+def display_graph_graphviz(nx_graph):
     """Display the knowledge graph using graphviz."""
     logger.debug("Starting to display knowledge graph using graphviz")
     try:
@@ -18,7 +18,7 @@ def display_graph_graphviz(graph):
         }
 
         logger.debug("Adding nodes to the graph")
-        for node, data in graph.nodes(data=True):
+        for node, data in nx_graph.nodes(data=True):
             node_type = data.get("type", "unknown")
             dot.node(
                 str(node),
@@ -30,7 +30,7 @@ def display_graph_graphviz(graph):
             )
 
         logger.debug("Adding edges to the graph")
-        for source, target, data in graph.edges(data=True):
+        for source, target, data in nx_graph.edges(data=True):
             action = data.get("action", "")
             dot.edge(str(source), str(target), label=action)
 
@@ -40,8 +40,8 @@ def display_graph_graphviz(graph):
 
         logger.debug(f"Graph saved as '{output_file}.png'")
         print(f"Graph saved as '{output_file}.png'")
-    except Exception as e:
-        logger.debug(f"An error occurred while displaying the graph: {str(e)}")
+    except Exception as error:
+        logger.debug(f"An error occurred while displaying the graph: {str(error)}")
 
 
 if __name__ == "__main__":

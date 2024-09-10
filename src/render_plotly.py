@@ -4,20 +4,20 @@ import plotly.graph_objects as go
 from knowledge_graph_parser import parse_knowledge_graph
 
 
-def create_spring_layout(graph):
+def create_spring_layout(nx_graph):
     logger.debug("Creating spring layout for the graph")
-    return nx.spring_layout(graph, k=0.7, iterations=50)
+    return nx.spring_layout(nx_graph, k=0.7, iterations=50)
 
 
-def create_edge_trace(graph, pos):
+def create_edge_trace(nx_graph, pos):
     logger.debug("Creating edge trace")
     edge_x, edge_y, edge_text = [], [], []
-    for edge in graph.edges():
+    for edge in nx_graph.edges():
         x0, y0 = pos[edge[0]]
         x1, y1 = pos[edge[1]]
         edge_x.extend([x0, x1, None])
         edge_y.extend([y0, y1, None])
-        action = graph.edges[edge]["attributes"].get("action", "")
+        action = nx_graph.edges[edge]["attributes"].get("action", "")
         edge_text.append(f"{edge[0]} <-> {edge[1]}: {action}")
 
     return go.Scatter(
@@ -31,17 +31,17 @@ def create_edge_trace(graph, pos):
     )
 
 
-def create_node_trace(graph, pos):
+def create_node_trace(nx_graph, pos):
     logger.debug("Creating node trace")
     node_x, node_y, node_text, node_colors = [], [], [], []
-    for node in graph.nodes():
+    for node in nx_graph.nodes():
         x, y = pos[node]
         node_x.append(x)
         node_y.append(y)
         node_text.append(
-            f"Node: {node}<br>Type: {graph.nodes[node]['attributes'].get('type', 'unknown')}"
+            f"Node: {node}<br>Type: {nx_graph.nodes[node]['attributes'].get('type', 'unknown')}"
         )
-        node_colors.append(graph.nodes[node]["attributes"].get("type", "unknown"))
+        node_colors.append(nx_graph.nodes[node]["attributes"].get("type", "unknown"))
 
     color_map = {
         "resource": "#8FBC8F",
@@ -55,7 +55,7 @@ def create_node_trace(graph, pos):
         y=node_y,
         mode="markers+text",
         hoverinfo="text",
-        text=list(graph.nodes()),
+        text=list(nx_graph.nodes()),
         hovertext=node_text,
         textposition="top center",
         marker=dict(
@@ -74,7 +74,7 @@ def create_figure(edge_trace, node_trace):
         data=[edge_trace, node_trace],
         layout=go.Layout(
             title="Craft Graph",
-            titlefont_size=16,
+            titlefont=dict(size=16),
             showlegend=False,
             hovermode="closest",
             margin=dict(b=20, l=5, r=5, t=40),
@@ -96,11 +96,11 @@ def create_figure(edge_trace, node_trace):
     )
 
 
-def add_edge_labels(fig, graph, pos):
-    for edge in graph.edges():
+def add_edge_labels(fig, nx_graph, pos):
+    for edge in nx_graph.edges():
         x0, y0 = pos[edge[0]]
         x1, y1 = pos[edge[1]]
-        action = graph.edges[edge]["attributes"].get("action", "")
+        action = nx_graph.edges[edge]["attributes"].get("action", "")
         fig.add_annotation(
             x=(x0 + x1) / 2,
             y=(y0 + y1) / 2,
@@ -145,25 +145,25 @@ def save_figure(fig):
             "outputs/knowledge_graph_kaleido.png", engine="kaleido", scale=2
         )
         logger.debug("Successfully wrote the figure to knowledge_graph.png")
-    except Exception as e:
-        logger.debug(f"Error writing figure to file: {str(e)}")
+    except Exception as error:
+        logger.debug(f"Error writing figure to file: {str(error)}")
 
 
-def display_graph_plotly(graph):
+def display_graph_plotly(nx_graph):
     """Display the knowledge graph using Plotly."""
     logger.debug("Starting to display knowledge graph using Plotly")
     try:
-        simple_graph = graph.to_undirected()
+        simple_graph = nx_graph.to_undirected()
         pos = create_spring_layout(simple_graph)
         edge_trace = create_edge_trace(simple_graph, pos)
         node_trace = create_node_trace(simple_graph, pos)
         fig = create_figure(edge_trace, node_trace)
-        add_edge_labels(fig, graph, pos)
+        add_edge_labels(fig, nx_graph, pos)
         add_legend(fig)
         fig.show()
         save_figure(fig)
-    except Exception as e:
-        logger.debug(f"Error creating or displaying the plot: {str(e)}")
+    except Exception as error:
+        logger.debug(f"Error creating or displaying the plot: {str(error)}")
 
 
 if __name__ == "__main__":

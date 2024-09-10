@@ -27,12 +27,12 @@ def setup_logger(name, log_file, level=logging.DEBUG):
     ch.setFormatter(formatter)
 
     # Create logger and add handlers
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(fh)
-    logger.addHandler(ch)
+    new_logger = logging.getLogger(name)
+    new_logger.setLevel(level)
+    new_logger.addHandler(fh)
+    new_logger.addHandler(ch)
 
-    return logger
+    return new_logger
 
 
 # Create a default logger

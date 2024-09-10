@@ -28,7 +28,7 @@ def parse_knowledge_graph(file_path):
             data = json.load(file)
 
         # Create a new directed graph
-        graph = nx.DiGraph()
+        nx_graph = nx.DiGraph()
 
         # Check for the presence of the "nodes" key
         if "nodes" not in data:
@@ -38,14 +38,14 @@ def parse_knowledge_graph(file_path):
         # Add nodes from JSON data
         for node in data["nodes"]:
             # Add node with its attributes
-            graph.add_node(node["id"], attributes=node.get("attributes", {}))
+            nx_graph.add_node(node["id"], attributes=node.get("attributes", {}))
         logger.debug(f"Added {len(data['nodes'])} nodes to the graph")
 
         # Add edges from JSON data if present
         if "edges" in data:
             for edge in data["edges"]:
                 # Add edge with its attributes
-                graph.add_edge(
+                nx_graph.add_edge(
                     edge["source"],
                     edge["target"],
                     attributes=edge.get("attributes", {}),
@@ -55,7 +55,7 @@ def parse_knowledge_graph(file_path):
             logger.debug("No 'edges' key found in JSON data, skipping edge creation")
 
         logger.debug("Knowledge graph parsed successfully")
-        return graph
+        return nx_graph
 
     except FileNotFoundError:
         logger.debug(f"Knowledge graph file not found at {file_path}")
@@ -63,19 +63,19 @@ def parse_knowledge_graph(file_path):
     except json.JSONDecodeError:
         logger.debug(f"Invalid JSON format in {file_path}")
         raise
-    except KeyError as e:
-        logger.debug(f"Missing required key in JSON data: {str(e)}")
+    except KeyError as error:
+        logger.debug(f"Missing required key in JSON data: {str(error)}")
         raise
 
 
-def get_available_resources(graph):
+def get_available_resources(nx_graph):
     """
     Get all available resources and tools from the knowledge graph.
 
     This function identifies all nodes in the graph that are marked as resources or tools.
 
     Args:
-        graph (nx.DiGraph): A NetworkX directed graph representing the knowledge graph.
+        nx_graph (nx.DiGraph): A NetworkX directed graph representing the knowledge graph.
 
     Returns:
         list: A list of resource and tool node IDs.
@@ -85,14 +85,14 @@ def get_available_resources(graph):
         # Filter nodes to include those with type 'resource' or 'tool'
         resources_and_tools = [
             node
-            for node, attr in graph.nodes(data=True)
+            for node, attr in nx_graph.nodes(data=True)
             if attr["attributes"].get("type") in ["resource", "tool"]
         ]
         logger.debug(f"Found {len(resources_and_tools)} available resources and tools")
         return resources_and_tools
-    except Exception as e:
+    except Exception as error:
         logger.debug(
-            f"An error occurred while getting available resources and tools: {str(e)}"
+            f"An error occurred while getting available resources and tools: {str(error)}"
         )
         return []
 

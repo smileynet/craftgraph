@@ -109,7 +109,7 @@ def test_parse_knowledge_graph_invalid_json(tmp_path):
     invalid_json_file.write_text("{invalid json content}")
 
     with pytest.raises(json.JSONDecodeError):
-        parse_knowledge_graph(invalid_json_file)
+        parse_knowledge_graph(str(invalid_json_file))
 
 
 def test_parse_knowledge_graph_missing_key(tmp_path):
@@ -123,7 +123,7 @@ def test_parse_knowledge_graph_missing_key(tmp_path):
     invalid_json_file.write_text("{}")  # Missing both "nodes" and "edges" keys
 
     with pytest.raises(KeyError):
-        parse_knowledge_graph(invalid_json_file)
+        parse_knowledge_graph(str(invalid_json_file))
 
 
 def test_get_available_resources_empty_graph():

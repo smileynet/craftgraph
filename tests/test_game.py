@@ -73,7 +73,7 @@ def test_display_inventory(game, capsys):
 
 
 @patch("builtins.input", side_effect=["1", "2", "1", "3", "4"])
-def test_run_game_interface(mock_input, game, capsys):
+def test_run_game_interface(_mock_input, game, capsys):
     """
     Test the main game loop of the GameInterface.
     """
@@ -95,7 +95,7 @@ def test_gather_resource_failure(game, capsys):
 
 
 @patch("builtins.input", side_effect=["invalid", "4"])
-def test_run_game_interface_invalid_input(mock_input, game, capsys):
+def test_run_game_interface_invalid_input(_mock_input, game, capsys):
     """
     Test the main game loop with invalid input.
     """
@@ -105,7 +105,7 @@ def test_run_game_interface_invalid_input(mock_input, game, capsys):
 
 
 @patch("builtins.input", side_effect=["2", "invalid", "4"])
-def test_run_game_interface_invalid_gather_input(mock_input, game, capsys):
+def test_run_game_interface_invalid_gather_input(_mock_input, game, capsys):
     """
     Test the main game loop with invalid input for resource gathering.
     """
