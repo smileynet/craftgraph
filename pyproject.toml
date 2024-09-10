@@ -2,17 +2,31 @@
 name = "CraftGraph"
 version = "0.1.0"
 description = "A game about crafting and graph theory"
+license = "MIT"
 authors = ["Sam Biggins <sambiggins@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/smileynet/CraftGraph"
 package-mode = false
+
+[tool.poetry.scripts]
+game = "src.game:main"
+graphviz = "src.graphviz:main"
+plotly = "src.plotly:main"
+tests = "pytest"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+
 [flake8]
-max-line-length = 88
-extend-ignore = ["E203", "E266", "E501", "W503"]
+max-line-length = 80
+extend-select = ["B950"]
+extend-ignore = ["E203", "E266", "E501", "E701", "W503"]
 plugins = ["flake8-pytest-style"]
 
 [tool.poetry.dependencies]
@@ -20,11 +34,10 @@ python = ">=3.10,<3.13"
 python-dotenv = "^1.0.1"
 networkx = "^3.3"
 matplotlib = "^3.9.2"
-python-igraph = "^0.11.6"
-cairocffi = "^1.7.1"
-igraph = "^0.11.6"
 plotly = "^5.24.0"
 graphviz = "^0.20.3"
+black = {extras = ["d"], version = "^24.8.0"}
+flake8-bugbear = "^24.8.19"
 
 
 [tool.poetry.group.dev.dependencies]

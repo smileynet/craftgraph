@@ -9,6 +9,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 def display_graph_plotly(graph):
     """Display the knowledge graph using Plotly."""
     logger.info("Starting to display knowledge graph using Plotly")
@@ -30,11 +31,11 @@ def display_graph_plotly(graph):
             edge_y.extend([y0, y1, None])
             # Check both directions for the edge attributes in the original directed graph
             if edge in graph.edges:
-                action = graph.edges[edge]['attributes'].get('action', '')
+                action = graph.edges[edge]["attributes"].get("action", "")
             elif (edge[1], edge[0]) in graph.edges:
-                action = graph.edges[(edge[1], edge[0])]['attributes'].get('action', '')
+                action = graph.edges[(edge[1], edge[0])]["attributes"].get("action", "")
             else:
-                action = ''
+                action = ""
             edge_text.append(f"{edge[0]} <-> {edge[1]}: {action}")
 
         edge_trace = go.Scatter(
@@ -57,7 +58,7 @@ def display_graph_plotly(graph):
             node_text.append(
                 f"Node: {node}<br>Type: {graph.nodes[node]['attributes'].get('type', 'unknown')}"
             )
-            node_colors.append(graph.nodes[node]['attributes'].get('type', 'unknown'))
+            node_colors.append(graph.nodes[node]["attributes"].get("type", "unknown"))
 
         color_map = {
             "resource": "#8FBC8F",  # Dark Sea Green
@@ -88,7 +89,7 @@ def display_graph_plotly(graph):
         fig = go.Figure(
             data=[edge_trace, node_trace],
             layout=go.Layout(
-                title="Knowledge Graph",
+                title="Craft Graph",
                 titlefont_size=16,
                 showlegend=False,
                 hovermode="closest",
@@ -115,11 +116,11 @@ def display_graph_plotly(graph):
             x0, y0 = pos[edge[0]]
             x1, y1 = pos[edge[1]]
             if edge in graph.edges:
-                action = graph.edges[edge]['attributes'].get('action', '')
+                action = graph.edges[edge]["attributes"].get("action", "")
             elif (edge[1], edge[0]) in graph.edges:
-                action = graph.edges[(edge[1], edge[0])]['attributes'].get('action', '')
+                action = graph.edges[(edge[1], edge[0])]["attributes"].get("action", "")
             else:
-                action = ''
+                action = ""
             fig.add_annotation(
                 x=(x0 + x1) / 2,
                 y=(y0 + y1) / 2,
@@ -127,7 +128,7 @@ def display_graph_plotly(graph):
                 showarrow=False,
                 font=dict(size=10, color="#555"),
                 bgcolor="white",
-                opacity=0.8
+                opacity=0.8,
             )
 
         # Add a legend
@@ -157,8 +158,10 @@ def display_graph_plotly(graph):
         # Write to file using Kaleido
         logger.info("Writing the figure to a file using Kaleido")
         try:
-            fig.update_layout(plot_bgcolor='white', paper_bgcolor='white')
-            fig.write_image("outputs/knowledge_graph_kaleido.png", engine="kaleido", scale=2)
+            fig.update_layout(plot_bgcolor="white", paper_bgcolor="white")
+            fig.write_image(
+                "outputs/knowledge_graph_kaleido.png", engine="kaleido", scale=2
+            )
             logger.info("Successfully wrote the figure to knowledge_graph.png")
         except Exception as e:
             logger.exception(f"Error writing figure to file: {str(e)}")
@@ -168,7 +171,7 @@ def display_graph_plotly(graph):
 
 if __name__ == "__main__":
     try:
-        file_path = 'data/knowledge_graph.json'
+        file_path = "data/knowledge_graph.json"
         logger.info("Parsing knowledge graph from JSON file")
         graph = parse_knowledge_graph(file_path)
         display_graph_plotly(graph)
