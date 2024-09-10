@@ -5,7 +5,6 @@ It tests the initialization, resource generation, gathering, and replenishment f
 """
 
 import pytest
-
 from resource_manager import ResourceManager
 
 
@@ -24,12 +23,25 @@ def test_resource_manager_initialization(resource_manager):
     """
     Test the initialization of the ResourceManager.
 
-    Ensures that the graph is loaded, resources are populated, and the correct number
-    of resource nodes are generated.
+    Ensures that the graph is loaded, resources are populated, and resource nodes are generated.
     """
     assert resource_manager.graph is not None
     assert len(resource_manager.resources) > 0
     assert len(resource_manager.resource_nodes) == 10
+
+
+def test_get_resource_type_nodes(resource_manager):
+    """
+    Test the _get_resource_type_nodes method.
+
+    Verifies that the method returns a non-empty list of resource type nodes.
+    """
+    resource_nodes = resource_manager._get_resource_type_nodes()
+    assert len(resource_nodes) > 0
+    assert all(
+        resource_manager.graph.nodes[node]["attributes"]["type"] == "resource"
+        for node in resource_nodes
+    )
 
 
 def test_generate_resource_nodes(resource_manager):
@@ -83,3 +95,15 @@ def test_replenish_resources(resource_manager):
     initial_count = len(resource_manager.get_available_resource_nodes())
     resource_manager.replenish_resources(3)
     assert len(resource_manager.get_available_resource_nodes()) == initial_count + 3
+
+
+def test_get_available_resource_nodes(resource_manager):
+    """
+    Test the get_available_resource_nodes method.
+
+    Verifies that the method returns a copy of the current available resource nodes.
+    """
+    available_nodes = resource_manager.get_available_resource_nodes()
+    assert isinstance(available_nodes, list)
+    assert len(available_nodes) == len(resource_manager.resource_nodes)
+    assert available_nodes is not resource_manager.resource_nodes

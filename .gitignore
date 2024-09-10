@@ -12,6 +12,7 @@ poetry.lock
 
 # Pytest
 .coverage
+htmlcov/
 
 # VSCode
 .vscode/
