@@ -75,7 +75,6 @@ class GameInterface:
         logger.debug("Game loop ended")
 
 
-# If you have a main block, keep it as is
 if __name__ == "__main__":
-    # Your existing main block code
-    pass
+    game = GameInterface("data/knowledge_graph.json")
+    game.run()

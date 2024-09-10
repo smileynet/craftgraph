@@ -22,15 +22,18 @@ class ResourceManager:
                 f"Initializing ResourceManager with graph: {knowledge_graph_path}"
             )
             self.graph = parse_knowledge_graph(knowledge_graph_path)
-            self.resources = get_available_resources(self.graph)
+            self.resources = self._get_resource_type_nodes()
             if not self.resources:
-                logger.debug("No resources found in the knowledge graph")
-                raise ValueError("No resources found in the knowledge graph")
+                logger.debug("No resource type nodes found in the knowledge graph")
+                raise ValueError("No resource type nodes found in the knowledge graph")
             self.resource_nodes = self._generate_resource_nodes()
             logger.debug("ResourceManager initialized successfully")
         except Exception as e:
             logger.debug(f"Error initializing ResourceManager: {str(e)}")
             raise
+
+    def _get_resource_type_nodes(self):
+        return [node for node, data in self.graph.nodes(data=True) if data.get('attributes', {}).get('type') == 'resource']
 
     def _generate_resource_nodes(self, num_nodes=10):
         """
@@ -46,7 +49,7 @@ class ResourceManager:
             logger.debug(f"Generating {num_nodes} resource nodes")
             return [random.choice(self.resources) for _ in range(num_nodes)]
         except IndexError:
-            logger.debug("No resources available to generate nodes")
+            logger.debug("No resource type nodes available to generate nodes")
             return []
 
     def gather_resource(self, resource_id):
@@ -61,7 +64,7 @@ class ResourceManager:
         """
         try:
             if resource_id in self.resource_nodes:
-                self.resource_nodes.remove(resource_id)  # Remove only one instance
+                self.resource_nodes.remove(resource_id)
                 logger.debug(f"Resource gathered: {resource_id}")
                 return resource_id
             logger.debug(f"Failed to gather resource: {resource_id} (not available)")
@@ -97,35 +100,12 @@ class ResourceManager:
         except Exception as e:
             logger.debug(f"Error replenishing resources: {str(e)}")
 
-    def is_craftable(self, resource_id):
-        """
-        Check if a resource is craftable.
-
-        Args:
-            resource_id (str): The ID of the resource to check.
-
-        Returns:
-            bool: True if the resource is craftable, False otherwise.
-        """
-        try:
-            # Check if there are any incoming edges with the 'craft' action
-            incoming_edges = self.graph.in_edges(resource_id, data=True)
-            return any(
-                edge[2]["attributes"].get("action") == "craft"
-                for edge in incoming_edges
-            )
-        except Exception as e:
-            logger.debug(f"Error checking if resource is craftable: {str(e)}")
-            return False
-
 
 if __name__ == "__main__":
     try:
         # Example usage
         resource_manager = ResourceManager("data/knowledge_graph.json")
-        logger.debug(
-            f"Available resources: {resource_manager.get_available_resource_nodes()}"
-        )
+        logger.debug(f"Available resources: {resource_manager.get_available_resource_nodes()}")
 
         # Try gathering a resource
         resource_to_gather = resource_manager.get_available_resource_nodes()[0]
@@ -134,8 +114,6 @@ if __name__ == "__main__":
 
         # Replenish resources
         resource_manager.replenish_resources(2)
-        logger.debug(
-            f"Resources after replenishment: {resource_manager.get_available_resource_nodes()}"
-        )
+        logger.debug(f"Resources after replenishment: {resource_manager.get_available_resource_nodes()}")
     except Exception as e:
         logger.debug(f"An error occurred: {str(e)}")
