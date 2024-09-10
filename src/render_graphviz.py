@@ -1,19 +1,11 @@
-import logging
-
+from logger import logger
 import graphviz
-
 from knowledge_graph_parser import parse_knowledge_graph
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
 
 
 def display_graph_graphviz(graph):
     """Display the knowledge graph using graphviz."""
-    logger.info("Starting to display knowledge graph using graphviz")
+    logger.debug("Starting to display knowledge graph using graphviz")
     try:
         dot = graphviz.Digraph(comment="Knowledge Graph")
         dot.attr(rankdir="LR", size="8,5")
@@ -43,19 +35,19 @@ def display_graph_graphviz(graph):
             dot.edge(str(source), str(target), label=action)
 
         output_file = "outputs/knowledge_graph_graphviz"
-        logger.info(f"Rendering the graph to file: {output_file}")
+        logger.debug(f"Rendering the graph to file: {output_file}")
         dot.render(output_file, format="png", cleanup=True)
 
-        logger.info(f"Graph saved as '{output_file}.png'")
+        logger.debug(f"Graph saved as '{output_file}.png'")
         print(f"Graph saved as '{output_file}.png'")
     except Exception as e:
-        logger.exception(f"An error occurred while displaying the graph: {str(e)}")
+        logger.debug(f"An error occurred while displaying the graph: {str(e)}")
 
 
 if __name__ == "__main__":
     try:
-        logger.info("Parsing knowledge graph from JSON file")
+        logger.debug("Parsing knowledge graph from JSON file")
         graph = parse_knowledge_graph("data/knowledge_graph.json")
         display_graph_graphviz(graph)
     except Exception as e:
-        logger.exception(f"An error occurred in main execution: {str(e)}")
+        logger.debug(f"An error occurred in main execution: {str(e)}")

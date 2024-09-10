@@ -1,13 +1,6 @@
-import logging
+from logger import logger
 import random
-
 from knowledge_graph_parser import get_available_resources, parse_knowledge_graph
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
 
 
 class ResourceManager:
@@ -25,18 +18,18 @@ class ResourceManager:
             knowledge_graph_path (str): Path to the JSON file containing the knowledge graph data.
         """
         try:
-            logger.info(
+            logger.debug(
                 f"Initializing ResourceManager with graph: {knowledge_graph_path}"
             )
             self.graph = parse_knowledge_graph(knowledge_graph_path)
             self.resources = get_available_resources(self.graph)
             if not self.resources:
-                logger.error("No resources found in the knowledge graph")
+                logger.debug("No resources found in the knowledge graph")
                 raise ValueError("No resources found in the knowledge graph")
             self.resource_nodes = self._generate_resource_nodes()
-            logger.info("ResourceManager initialized successfully")
+            logger.debug("ResourceManager initialized successfully")
         except Exception as e:
-            logger.exception(f"Error initializing ResourceManager: {str(e)}")
+            logger.debug(f"Error initializing ResourceManager: {str(e)}")
             raise
 
     def _generate_resource_nodes(self, num_nodes=10):
@@ -53,7 +46,7 @@ class ResourceManager:
             logger.debug(f"Generating {num_nodes} resource nodes")
             return [random.choice(self.resources) for _ in range(num_nodes)]
         except IndexError:
-            logger.error("No resources available to generate nodes")
+            logger.debug("No resources available to generate nodes")
             return []
 
     def gather_resource(self, resource_id):
@@ -69,12 +62,12 @@ class ResourceManager:
         try:
             if resource_id in self.resource_nodes:
                 self.resource_nodes.remove(resource_id)  # Remove only one instance
-                logger.info(f"Resource gathered: {resource_id}")
+                logger.debug(f"Resource gathered: {resource_id}")
                 return resource_id
-            logger.warning(f"Failed to gather resource: {resource_id} (not available)")
+            logger.debug(f"Failed to gather resource: {resource_id} (not available)")
             return None
         except Exception as e:
-            logger.exception(f"Error gathering resource: {str(e)}")
+            logger.debug(f"Error gathering resource: {str(e)}")
             return None
 
     def get_available_resource_nodes(self):
@@ -95,14 +88,14 @@ class ResourceManager:
             num_nodes (int): Number of new resources to add. Defaults to 1.
         """
         try:
-            logger.info(f"Replenishing {num_nodes} resources")
+            logger.debug(f"Replenishing {num_nodes} resources")
             new_resources = [random.choice(self.resources) for _ in range(num_nodes)]
             self.resource_nodes.extend(new_resources)
             logger.debug(f"Resources added: {new_resources}")
         except IndexError:
-            logger.error("No resources available to replenish")
+            logger.debug("No resources available to replenish")
         except Exception as e:
-            logger.exception(f"Error replenishing resources: {str(e)}")
+            logger.debug(f"Error replenishing resources: {str(e)}")
 
     def is_craftable(self, resource_id):
         """
@@ -122,7 +115,7 @@ class ResourceManager:
                 for edge in incoming_edges
             )
         except Exception as e:
-            logger.exception(f"Error checking if resource is craftable: {str(e)}")
+            logger.debug(f"Error checking if resource is craftable: {str(e)}")
             return False
 
 
@@ -130,19 +123,19 @@ if __name__ == "__main__":
     try:
         # Example usage
         resource_manager = ResourceManager("data/knowledge_graph.json")
-        logger.info(
+        logger.debug(
             f"Available resources: {resource_manager.get_available_resource_nodes()}"
         )
 
         # Try gathering a resource
         resource_to_gather = resource_manager.get_available_resource_nodes()[0]
         gathered = resource_manager.gather_resource(resource_to_gather)
-        logger.info(f"Gathered resource: {gathered}")
+        logger.debug(f"Gathered resource: {gathered}")
 
         # Replenish resources
         resource_manager.replenish_resources(2)
-        logger.info(
+        logger.debug(
             f"Resources after replenishment: {resource_manager.get_available_resource_nodes()}"
         )
     except Exception as e:
-        logger.exception(f"An error occurred: {str(e)}")
+        logger.debug(f"An error occurred: {str(e)}")

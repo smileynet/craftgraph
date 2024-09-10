@@ -1,13 +1,6 @@
 import json
-import logging
-
 import networkx as nx
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+from logger import logger
 
 
 def parse_knowledge_graph(file_path):
@@ -28,7 +21,7 @@ def parse_knowledge_graph(file_path):
         json.JSONDecodeError: If the JSON file is not properly formatted.
         KeyError: If the JSON file is missing required keys.
     """
-    logger.info(f"Parsing knowledge graph from file: {file_path}")
+    logger.debug(f"Parsing knowledge graph from file: {file_path}")
     try:
         # Read the JSON file
         with open(file_path, "r") as file:
@@ -50,17 +43,17 @@ def parse_knowledge_graph(file_path):
             )
         logger.debug(f"Added {len(data.get('edges', []))} edges to the graph")
 
-        logger.info("Knowledge graph parsed successfully")
+        logger.debug("Knowledge graph parsed successfully")
         return graph
 
     except FileNotFoundError:
-        logger.error(f"Knowledge graph file not found at {file_path}")
+        logger.debug(f"Knowledge graph file not found at {file_path}")
         raise
     except json.JSONDecodeError:
-        logger.error(f"Invalid JSON format in {file_path}")
+        logger.debug(f"Invalid JSON format in {file_path}")
         raise
     except KeyError as e:
-        logger.error(f"Missing required key in JSON data: {str(e)}")
+        logger.debug(f"Missing required key in JSON data: {str(e)}")
         raise
 
 
@@ -76,7 +69,7 @@ def get_available_resources(graph):
     Returns:
         list: A list of resource and tool node IDs.
     """
-    logger.info("Retrieving available resources and tools from the knowledge graph")
+    logger.debug("Retrieving available resources and tools from the knowledge graph")
     try:
         # Filter nodes to include those with type 'resource' or 'tool'
         resources_and_tools = [
@@ -87,7 +80,7 @@ def get_available_resources(graph):
         logger.debug(f"Found {len(resources_and_tools)} available resources and tools")
         return resources_and_tools
     except Exception as e:
-        logger.exception(
+        logger.debug(
             f"An error occurred while getting available resources and tools: {str(e)}"
         )
         return []
@@ -98,6 +91,6 @@ if __name__ == "__main__":
         # Example usage
         graph = parse_knowledge_graph("data/knowledge_graph.json")
         resources = get_available_resources(graph)
-        logger.info(f"Available resources and tools: {resources}")
+        logger.debug(f"Available resources and tools: {resources}")
     except Exception as e:
-        logger.exception(f"An error occurred: {str(e)}")
+        logger.debug(f"An error occurred: {str(e)}")
