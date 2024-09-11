@@ -1,6 +1,7 @@
-from logger import logger
 import graphviz
+
 from knowledge_graph_parser import parse_knowledge_graph
+from logger import logger
 
 
 def display_graph_graphviz(nx_graph):

@@ -1,7 +1,8 @@
-from logger import logger
 import networkx as nx
 import plotly.graph_objects as go
+
 from knowledge_graph_parser import parse_knowledge_graph
+from logger import logger
 
 
 def create_spring_layout(nx_graph):

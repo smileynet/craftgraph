@@ -1,5 +1,7 @@
 import json
+
 import networkx as nx
+
 from logger import logger
 
 

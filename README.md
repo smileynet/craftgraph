@@ -31,14 +31,9 @@ poetry run python main.py
 
 ## Linting
 
-This project uses `flake8` for linting.
-
-### Running flake8
-
-To check your code for style violations using `flake8`, run:
-
-```bash
-poetry run flake8 .
+```
+ruff check --select I --fix
+ruff format
 ```
 
 ### Running flake8 with pytest
